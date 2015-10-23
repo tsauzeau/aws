@@ -3,7 +3,7 @@
 
 from pyvows import Vows, expect
 
-from thumbor.context import Context
+from thumbor.context import Context, RequestParameters
 from thumbor.config import Config
 from fixtures.storage_fixture import IMAGE_URL, IMAGE_BYTES, get_server
 
@@ -274,3 +274,43 @@ class S3StorageVows(Vows.Context):
 
             def should_not_be_null(self, topic):
                 expect(topic.args[0]).to_be_null()
+
+    class WebPVows(Vows.Context):
+        class HasConfigRequest(Vows.Context):
+            def topic(self):
+                config  = Config(AUTO_WEBP=True)
+                context = Context(config=config)
+                context.request = RequestParameters(accepts_webp=True)
+                return Storage(context)
+
+            def should_be_webp(self, topic):
+                expect(topic.is_auto_webp).to_be_true()
+
+        class HasConfigNoRequest(Vows.Context):
+            def topic(self):
+                config  = Config(AUTO_WEBP=True)
+                context = Context(config=config)
+                return Storage(context)
+
+            def should_be_webp(self, topic):
+                expect(topic.is_auto_webp).to_be_false()
+
+        class HasConfigRequestDoesNotAccept(Vows.Context):
+            def topic(self):
+                config  = Config(AUTO_WEBP=True)
+                context = Context(config=config)
+                context.request = RequestParameters(accepts_webp=False)
+                return Storage(context)
+
+            def should_be_webp(self, topic):
+                expect(topic.is_auto_webp).to_be_false()
+
+        class HasNotConfig(Vows.Context):
+            def topic(self):
+                config  = Config(AUTO_WEBP=False)
+                context = Context(config=config)
+                context.request = RequestParameters(accepts_webp=True)
+                return Storage(context)
+
+            def should_be_webp(self, topic):
+                expect(topic.is_auto_webp).to_be_false()
