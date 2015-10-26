@@ -116,7 +116,7 @@ class AwsStorage():
         :return: Whether it is expired or not
         :rtype: bool
         """
-        if key and not self._get_error(key):
+        if key and self._get_error(key) is None:
             expire_in_seconds = self.context.config.get('STORAGE_EXPIRATION_SECONDS', 3600)
 
             # Never expire
