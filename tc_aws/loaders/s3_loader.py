@@ -30,8 +30,8 @@ def load(context, url, callback):
         bucket_loader = Bucket(bucket, context.config.get('TC_AWS_REGION'))
 
         def handle_data(file_key):
-            if not file_key or 'Error' in file_key:
-                logger.warn("ERROR retrieving image from S3 {0}: {1}".format(key, file_key['Error']['Message']))
+            if not file_key or 'Error' in file_key or 'Body' not in file_key:
+                logger.warn("ERROR retrieving image from S3 {0}: {1}".format(key, str(file_key)))
             else:
                 callback(file_key['Body'].read())
 

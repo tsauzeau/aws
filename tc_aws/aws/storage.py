@@ -116,7 +116,7 @@ class AwsStorage():
         :return: Whether it is expired or not
         :rtype: bool
         """
-        if key and self._get_error(key) is None:
+        if key and self._get_error(key) is None and 'LastModified' in key:
             expire_in_seconds = self.context.config.get('STORAGE_EXPIRATION_SECONDS', 3600)
 
             # Never expire
@@ -140,7 +140,7 @@ class AwsStorage():
         file_abspath = self._normalize_path(path)
 
         def on_file_fetched(file):
-            if not file or self._get_error(file) or self.is_expired(file):
+            if not file or self._get_error(file) or self.is_expired(file) or 'LastModified' not in file:
                 logger.warn("[AwsStorage] s3 key not found at %s" % file_abspath)
                 callback(None)
             else:
@@ -159,7 +159,7 @@ class AwsStorage():
         crypto_path = "%s.txt" % (splitext(file_abspath)[0])
 
         def return_data(file_key):
-            if not file_key or self._get_error(file_key) or self.is_expired(file_key):
+            if not file_key or self._get_error(file_key) or self.is_expired(file_key) or 'Body' not in file_key:
                 logger.warn("[STORAGE] s3 key not found at %s" % crypto_path)
                 callback(None)
             else:
@@ -197,7 +197,7 @@ class AwsStorage():
         path = '%s.detectors.txt' % splitext(file_abspath)[0]
 
         def return_data(file_key):
-            if not file_key or self._get_error(file_key) or self.is_expired(file_key):
+            if not file_key or self._get_error(file_key) or self.is_expired(file_key) or 'Body' not in file_key:
                 logger.warn("[AwsStorage] s3 key not found at %s" % path)
                 callback(None)
             else:
@@ -244,9 +244,6 @@ class AwsStorage():
         """
         if 'Error' in response:
             return response['Error']['Message'] if 'Message' in response['Error'] else response['Error']
-
-        if 'Body' not in response or 'LastModified' not in response:
-            return 'Incomplete response from server'
 
         return None
 

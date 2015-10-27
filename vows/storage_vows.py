@@ -328,8 +328,6 @@ class S3StorageVows(Vows.Context):
                 expect(topic.is_expired(False)).to_be_true()
                 expect(topic.is_expired(dict())).to_be_true()
                 expect(topic.is_expired({'Error': ''})).to_be_true()
-                expect(topic.is_expired({'Body': ''})).to_be_true()
-                expect(topic.is_expired({'LastModified': ''})).to_be_true()
 
             def should_tell_when_not_expired(self, topic):
                 key = {
