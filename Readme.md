@@ -17,7 +17,7 @@ Authentication is handled by botocore, see [Boto3 documentation](https://boto3.r
 ## Origin story
 
 This is a fork of [willtrking thumbor_aws](https://github.com/willtrking/thumbor_aws); as this repository was not maintained anymore,
-we decided to maintain it under the [thumbor-community](https://github.com/thumbor-community) organisation.
+we decided to maintain it under the [thumbor-community](https://github.com/thumbor-community) organization.
 
 ## Features
 
