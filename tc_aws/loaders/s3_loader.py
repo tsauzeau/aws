@@ -34,10 +34,13 @@ def load(context, url, callback):
         def handle_data(file_key):
             if not file_key or 'Error' in file_key or 'Body' not in file_key:
                 logger.warn("ERROR retrieving image from S3 {0}: {1}".format(key, str(file_key)))
-                # We will now handle the failure and return a 404.
+                # If we got here, there was a failure. We will return 404 if S3 returned a 404, otherwise 502.
                 result = LoaderResult()
-                result.error = LoaderResult.ERROR_NOT_FOUND
                 result.successful = False
+                if file_key and file_key.get('ResponseMetadata', {}).get('HTTPStatusCode') == 404:
+                    result.error = LoaderResult.ERROR_NOT_FOUND
+                else:
+                    result.error = LoaderResult.ERROR_UPSTREAM
                 callback(result)
             else:
                 callback(file_key['Body'].read())
