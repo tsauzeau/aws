@@ -5,12 +5,14 @@
 # found in the LICENSE file.
 
 from thumbor.utils import logger
+from thumbor.loaders import LoaderResult
 from tornado.concurrent import return_future
 
 import thumbor.loaders.http_loader as http_loader
 
 from . import *
 from ..aws.bucket import Bucket
+
 
 @return_future
 def load(context, url, callback):
@@ -32,6 +34,11 @@ def load(context, url, callback):
         def handle_data(file_key):
             if not file_key or 'Error' in file_key or 'Body' not in file_key:
                 logger.warn("ERROR retrieving image from S3 {0}: {1}".format(key, str(file_key)))
+                # We will now handle the failure and return a 404.
+                result = LoaderResult()
+                result.error = LoaderResult.ERROR_NOT_FOUND
+                result.successful = False
+                callback(result)
             else:
                 callback(file_key['Body'].read())
 
