@@ -4,7 +4,7 @@
 # Use of this source code is governed by the MIT license that can be
 # found in the LICENSE file.
 
-__all__ = ['_get_bucket_and_key', '_get_bucket', '_get_key', '_normalize_url', '_validate_bucket', '_use_http_loader']
+__all__ = ['_get_bucket_and_key', '_get_bucket', '_get_key', '_validate_bucket', '_use_http_loader']
 
 import urllib2
 
@@ -48,15 +48,6 @@ def _get_key(path, context):
     """
     root_path = context.config.get('TC_AWS_LOADER_ROOT_PATH')
     return '/'.join([root_path, path]) if root_path is not '' else path
-
-def _normalize_url(url):
-    """
-    Normalizes given url
-    :param string url: URL to normalize
-    :return: exactly the same url since we only use http loader if url starts with http prefix.
-    :rtype: string
-    """
-    return url
 
 def _validate_bucket(context, bucket):
     """

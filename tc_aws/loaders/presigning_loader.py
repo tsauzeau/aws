@@ -32,13 +32,13 @@ def load(context, url, callback):
     :param callable callback: Callback method once done
     """
     if _use_http_loader(context, url):
-        http_loader.load_sync(context, url, callback, normalize_url_func=_normalize_url)
+        http_loader.load_sync(context, url, callback, normalize_url_func=http_loader._normalize_url)
     else:
         bucket, key = _get_bucket_and_key(context, url)
 
         if _validate_bucket(context, bucket):
             def on_url_generated(generated_url):
-                http_loader.load_sync(context, generated_url, callback, normalize_url_func=_normalize_url)
+                http_loader.load_sync(context, generated_url, callback, normalize_url_func=http_loader._normalize_url)
 
             _generate_presigned_url(context, bucket, key, on_url_generated)
         else:
