@@ -52,11 +52,3 @@ class S3LoaderVows(Vows.Context):
 
         def should_detect_key(self, topic):
             expect(topic).to_equal(IMAGE_PATH)
-
-    class CanNormalize(Vows.Context):
-
-        def topic(self):
-            return _normalize_url('/'.join([s3_bucket, IMAGE_PATH]))
-
-        def should_detect_bucket(self, topic):
-            expect(topic).to_equal('/'.join([s3_bucket, IMAGE_PATH]))

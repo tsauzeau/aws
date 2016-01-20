@@ -23,7 +23,7 @@ def load(context, url, callback):
     :param callable callback: Callback method once done
     """
     if _use_http_loader(context, url):
-        http_loader.load_sync(context, url, callback, normalize_url_func=_normalize_url)
+        http_loader.load_sync(context, url, callback, normalize_url_func=http_loader._normalize_url)
         return
 
     bucket, key = _get_bucket_and_key(context, url)
