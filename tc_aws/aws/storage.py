@@ -67,7 +67,7 @@ class AwsStorage():
         metadata = {}
 
         if self.config_prefix is 'TC_AWS_RESULT_STORAGE' and self.context.config.get('TC_AWS_STORE_METADATA'):
-            metadata = self.context.headers
+            metadata = dict(self.context.headers)
 
         self.storage.put(
             abspath,

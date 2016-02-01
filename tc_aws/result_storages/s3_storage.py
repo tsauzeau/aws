@@ -11,6 +11,7 @@ from ..aws.storage import AwsStorage
 
 from thumbor.utils import logger
 
+
 class Storage(AwsStorage, BaseStorage):
     """
     S3 Result Storage
