@@ -7,6 +7,7 @@
 import session as session_handler
 from tornado_botocore import Botocore
 from tornado.concurrent import return_future
+from thumbor.utils import logger
 
 
 class Bucket(object):
@@ -40,7 +41,7 @@ class Bucket(object):
         session.call(
             callback=callback,
             Bucket=self._bucket,
-            Key=path,
+            Key=self._clean_key(path),
         )
 
     @return_future
@@ -59,7 +60,7 @@ class Bucket(object):
             ClientMethod='get_object',
             Params={
                 'Bucket': self._bucket,
-                'Key':    path,
+                'Key':    self._clean_key(path),
             },
             ExpiresIn=expiry,
             HttpMethod=method,
@@ -83,7 +84,7 @@ class Bucket(object):
         args = dict(
             callback=callback,
             Bucket=self._bucket,
-            Key=path,
+            Key=self._clean_key(path),
             Body=data,
             Metadata=metadata,
             StorageClass=storage_class,
@@ -110,5 +111,18 @@ class Bucket(object):
         session.call(
             callback=callback,
             Bucket=self._bucket,
-            Key=path,
+            Key=self._clean_key(path),
         )
+
+    def _clean_key(self, path):
+        logger.debug('Cleaning key: {path}'.format(path=path))
+        key = path
+        while '//' in key:
+            logger.debug(key)
+            key = key.replace('//', '/')
+
+        if '/' == key[0]:
+            key = key[1:]
+
+        logger.debug('Cleansed key: {key}'.format(key=key))
+        return key
