@@ -96,6 +96,7 @@ class Bucket(object):
         my_session = session_handler.get_session()
         session = Botocore(service='s3', region_name=self._region,
                            operation='PutObject', session=my_session)
+
         session.call(**args)
 
     @return_future

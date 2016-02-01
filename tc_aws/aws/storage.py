@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (c) 2015, thumbor-community
+# Copyright (c) 2015-2016, thumbor-community
 # Use of this source code is governed by the MIT license that can be
 # found in the LICENSE file.
 
@@ -56,7 +56,8 @@ class AwsStorage():
 
         self.storage.get(file_abspath, callback=callback)
 
-    def set(self, bytes, abspath):
+    @return_future
+    def set(self, bytes, abspath, callback=None):
         """
         Stores data at given path
         :param bytes bytes: Data to store
@@ -75,10 +76,8 @@ class AwsStorage():
             metadata=metadata,
             reduced_redundancy=self.context.config.get('TC_AWS_STORAGE_RRS', False),
             encrypt_key=self.context.config.get('TC_AWS_STORAGE_SSE', False),
-            callback=self._handle_error,
+            callback=callback,
         )
-
-        return abspath
 
     def remove(self, path):
         """
