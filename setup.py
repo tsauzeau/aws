@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tc_aws',
-    version='6.0.0b1',
+    version='6.0.0',
     description='Thumbor AWS extensions',
     author='Thumbor-Community & William King',
     author_email='willtrking@gmail.com',
@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'python-dateutil',
-        'thumbor>=6.0.0b1',
+        'thumbor>=6.0.0',
         'tornado-botocore',
     ],
     extras_require={
