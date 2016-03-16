@@ -1,14 +1,12 @@
 # coding: utf-8
 
-# Copyright (c) 2015, thumbor-community
+# Copyright (c) 2015-2016, thumbor-community
 # Use of this source code is governed by the MIT license that can be
 # found in the LICENSE file.
 
-import calendar
-
 from json import loads, dumps
 from os.path import join, splitext
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.tz import tzutc
 
 from tornado.concurrent import return_future
@@ -58,7 +56,8 @@ class AwsStorage():
 
         self.storage.get(file_abspath, callback=callback)
 
-    def set(self, bytes, abspath):
+    @return_future
+    def set(self, bytes, abspath, callback=None):
         """
         Stores data at given path
         :param bytes bytes: Data to store
@@ -77,10 +76,8 @@ class AwsStorage():
             metadata=metadata,
             reduced_redundancy=self.context.config.get('TC_AWS_STORAGE_RRS', False),
             encrypt_key=self.context.config.get('TC_AWS_STORAGE_SSE', False),
-            callback=self._handle_error,
+            callback=callback,
         )
-
-        return abspath
 
     def remove(self, path):
         """
@@ -144,7 +141,7 @@ class AwsStorage():
                 logger.warn("[AwsStorage] s3 key not found at %s" % file_abspath)
                 callback(None)
             else:
-                callback(self._utc_to_local(file['LastModified']))
+                callback(file['LastModified'])
 
         self.storage.get(file_abspath, callback=on_file_fetched)
 
@@ -220,20 +217,6 @@ class AwsStorage():
         self.set(dumps(data), path)
 
         return path
-
-    def _utc_to_local(self, utc_dt):
-        """
-        Converts utc datetime to local datetime
-        :param datetime utc_dt:
-        :return: Local datetime
-        :rtype datetime:
-        """
-        # get integer timestamp to avoid precision lost
-        timestamp = calendar.timegm(utc_dt.timetuple())
-        local_dt  = datetime.fromtimestamp(timestamp)
-
-        assert utc_dt.resolution >= timedelta(microseconds=1)
-        return local_dt.replace(microsecond=utc_dt.microsecond)
 
     def _get_error(self, response):
         """

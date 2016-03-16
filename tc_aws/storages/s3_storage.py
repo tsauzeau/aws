@@ -1,6 +1,6 @@
 #coding: utf-8
 
-# Copyright (c) 2015, thumbor-community
+# Copyright (c) 2015-2016, thumbor-community
 # Use of this source code is governed by the MIT license that can be
 # found in the LICENSE file.
 
@@ -22,17 +22,22 @@ class Storage(AwsStorage, BaseStorage):
         BaseStorage.__init__(self, context)
         AwsStorage.__init__(self, context, 'TC_AWS_STORAGE')
 
-    def put(self, path, bytes):
+    @return_future
+    def put(self, path, bytes, callback=None):
         """
         Stores image
         :param string path: Path to store data at
         :param bytes bytes: Data to store
-        :return: Path where data is stored
+        :param callable callback:
         :rtype: string
         """
-        self.set(bytes, self._normalize_path(path))
+        def once_written(response):
+            if response is None or self._get_error(response) is not None:
+                callback(None)
+            else:
+                callback(path)
 
-        return path
+        self.set(bytes, self._normalize_path(path), callback=once_written)
 
     @return_future
     def get(self, path, callback):

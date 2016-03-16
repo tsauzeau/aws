@@ -26,8 +26,9 @@ class Request(object):
 class S3ResultStorageVows(Vows.Context):
 
     class CanStoreImage(Vows.Context):
+        @Vows.async_topic
         @mock_s3
-        def topic(self):
+        def topic(self, callback):
             self.conn = S3Connection()
             self.conn.create_bucket(s3_bucket)
 
@@ -37,9 +38,8 @@ class S3ResultStorageVows(Vows.Context):
             ctx.request.url = 'my-image.jpg'
 
             storage = Storage(ctx)
-            path = storage.put(IMAGE_BYTES)
 
-            return path
+            storage.put(IMAGE_BYTES, callback=callback)
 
         def should_be_in_catalog(self, topic):
             expect(topic).to_equal('my-image.jpg')

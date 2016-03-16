@@ -1,6 +1,6 @@
 #coding: utf-8
 
-# Copyright (c) 2015, thumbor-community
+# Copyright (c) 2015-2016, thumbor-community
 # Use of this source code is governed by the MIT license that can be
 # found in the LICENSE file.
 
@@ -24,18 +24,21 @@ class Storage(AwsStorage, BaseStorage):
         BaseStorage.__init__(self, context)
         AwsStorage.__init__(self, context, 'TC_AWS_RESULT_STORAGE')
 
-    def put(self, bytes):
+    @return_future
+    def put(self, bytes, callback=None):
         """
         Stores image
         :param bytes bytes: Data to store
-        :return: Path where data is stored
+        :param callable callback: Method called once done
         :rtype: string
         """
         path = self._normalize_path(self.context.request.url)
 
-        self.set(bytes, path)
+        if callback is None:
+            def callback(key):
+                self._handle_error(key)
 
-        return path
+        super(Storage, self).set(bytes, path, callback=callback)
 
     @return_future
     def get(self, path=None, callback=None):
@@ -56,7 +59,6 @@ class Storage(AwsStorage, BaseStorage):
                 result.successful = True
                 result.metadata   = key.copy()
                 result.metadata.pop('Body')
-                result.metadata['LastModified'] = self._utc_to_local(result.metadata['LastModified'])
 
                 logger.debug(str(result.metadata))
 
