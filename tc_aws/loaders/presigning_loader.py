@@ -38,7 +38,9 @@ def load(context, url, callback):
 
         if _validate_bucket(context, bucket):
             def on_url_generated(generated_url):
-                http_loader.load_sync(context, generated_url, callback, normalize_url_func=http_loader._normalize_url)
+                def noop(url):
+                    return url
+                http_loader.load_sync(context, generated_url, callback, normalize_url_func=noop)
 
             _generate_presigned_url(context, bucket, key, on_url_generated)
         else:
