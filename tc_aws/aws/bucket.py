@@ -16,7 +16,7 @@ class Bucket(object):
     """
     _bucket      = None
     _region      = None
-    _endopint    = None
+    _endpoint    = None
     _local_cache = dict()
 
     def __init__(self, bucket, region, endpoint):
