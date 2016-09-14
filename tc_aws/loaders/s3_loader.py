@@ -47,4 +47,5 @@ def load(context, url, callback):
 
         bucket_loader.get(key, callback=handle_data)
     else:
-        callback(None)
+        result = LoaderResult(successful=False, error=LoaderResult.ERROR_NOT_FOUND)
+        callback(result)
