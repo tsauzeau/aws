@@ -3,8 +3,8 @@ from botocore.utils import fix_s3_host
 
 __all__ = ['get_session']
 
-# We cache two sessions - one with a custom endpoint, one without)
-# So we have one session with the s3 signing hook for AWS connections
+# We cache two sessions
+# So we have one session with the s3 host-subdomain hook for AWS connections
 # and one without the hook for custom endpoints
 sessions = [None, None]
 
