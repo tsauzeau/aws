@@ -5,7 +5,7 @@ __all__ = ['get_session']
 
 session = None
 
-def get_session(custom_endpoint=None):
+def get_session(custom_endpoint=False):
     '''
     Return a session object
     
