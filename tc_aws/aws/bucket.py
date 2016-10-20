@@ -16,17 +16,20 @@ class Bucket(object):
     """
     _bucket      = None
     _region      = None
+    _endpoint    = None
     _local_cache = dict()
 
-    def __init__(self, bucket, region):
+    def __init__(self, bucket, region, endpoint):
         """
         Constructor
         :param string bucket: The bucket name
         :param string region: The AWS API region to use
+        :param string endpoint: A specific endpoint to use
         :return: The created bucket
         """
         self._bucket = bucket
         self._region = region
+        self._endpoint = endpoint
 
     @return_future
     def get(self, path, callback=None):
@@ -35,9 +38,10 @@ class Bucket(object):
         :param string path: Path or 'key' to retrieve AWS object
         :param callable callback: Callback function for once the retrieval is done
         """
-        my_session = session_handler.get_session()
+        my_session = session_handler.get_session(self._endpoint is not None)
         session = Botocore(service='s3', region_name=self._region,
-                           operation='GetObject', session=my_session)
+                           operation='GetObject', session=my_session,
+                           endpoint_url=self._endpoint)
         session.call(
             callback=callback,
             Bucket=self._bucket,
@@ -53,8 +57,9 @@ class Bucket(object):
         :param int expiry: URL validity time
         :param callable callback: Called function once done
         """
-        session = session_handler.get_session()
-        client  = session.create_client('s3', region_name=self._region)
+        session = session_handler.get_session(self._endpoint is not None)
+        client  = session.create_client('s3', region_name=self._region,
+                                        endpoint_url=self._endpoint)
 
         url = client.generate_presigned_url(
             ClientMethod='get_object',
@@ -93,9 +98,10 @@ class Bucket(object):
         if encrypt_key:
             args['ServerSideEncryption'] = 'AES256'
 
-        my_session = session_handler.get_session()
+        my_session = session_handler.get_session(self._endpoint is not None)
         session = Botocore(service='s3', region_name=self._region,
-                           operation='PutObject', session=my_session)
+                           operation='PutObject', session=my_session,
+                           endpoint_url=self._endpoint)
 
         session.call(**args)
 
@@ -106,9 +112,10 @@ class Bucket(object):
         :param string path: Path or 'key' to delete
         :param callable callback: Called function once done
         """
-        my_session = session_handler.get_session()
+        my_session = session_handler.get_session(self._endpoint is not None)
         session = Botocore(service='s3', region_name=self._region,
-                           operation='DeleteObject', session=my_session)
+                           operation='DeleteObject', session=my_session,
+                           endpoint_url=self._endpoint)
         session.call(
             callback=callback,
             Bucket=self._bucket,
