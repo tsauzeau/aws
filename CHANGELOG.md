@@ -2,6 +2,12 @@
 
 This file will describe the changes in each version, noticeable the BC Breaks that may have append
 
+## 6.1 - Custom endpoint
+
+You can now specify a custom AWS API endpoint by setting this in the configuration:
+
+``TC_AWS_ENDPOINT=http://your.endpoint.url/``
+
 ## 2.0 - Async Connection
 
 Switched connection from Boto 2.0 to botocore, in order to handle tornado async connections. This update leads to some major BC Breaks.
@@ -32,4 +38,3 @@ Switched connection from Boto 2.0 to botocore, in order to handle tornado async 
 | AWS_SECRET_KEY | N/A |
 | AWS_ROLE_BASED_CONNECTION | N/A |
 | BOTO_CONFIG | N/A |
-

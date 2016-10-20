@@ -24,3 +24,4 @@ Config.define('TC_AWS_ENABLE_HTTP_LOADER',         False,      'Enable HTTP Load
 Config.define('TC_AWS_ALLOWED_BUCKETS',            False,      'List of allowed buckets to be requested', 'S3')
 Config.define('TC_AWS_STORE_METADATA',             False,      'S3 store result with metadata', 'S3')
 
+Config.define('TC_AWS_ENDPOINT',                   None,       'Custom AWS API endpoint', 'S3')
