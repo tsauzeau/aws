@@ -19,6 +19,20 @@ Authentication is handled by botocore, see [Boto3 documentation](https://boto3.r
 This is a fork of [willtrking thumbor_aws](https://github.com/willtrking/thumbor_aws); as this repository was not maintained anymore,
 we decided to maintain it under the [thumbor-community](https://github.com/thumbor-community) organization.
 
+## Contribution
+
+First you need to fork this project.
+Clone your repo at your computer
+Next, inside a folder for project:
+
+```bash
+    make setup
+    make test
+```
+
+If all test passed, you have an environment ready to start. 
+We recommend to use python-virtualevn (virtualenv and virtualenv-wrapper)
+
 ## Features
 
  * tc_aws.loaders.s3_loader
@@ -39,6 +53,7 @@ TC_AWS_LOADER_ROOT_PATH='' # S3 path prefix for Loader bucket
 
 TC_AWS_RESULT_STORAGE_BUCKET='' # S3 bucket for result Storage
 TC_AWS_RESULT_STORAGE_ROOT_PATH='' # S3 path prefix for Result storage bucket
+TC_AWS_MAX_RETRY=0 # Max retries for get image from S3 Bucket. Default is 0
 
 # put data into S3 using the Server Side Encryption functionality to
 # encrypt data at rest in S3
