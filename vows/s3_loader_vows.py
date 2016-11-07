@@ -1,9 +1,8 @@
-# se!/usr/bin/python
 # -*- coding: utf-8 -*-
 from mock import Mock
 
 from pyvows import Vows, expect
-from mock import patch
+from mock import patch, MagicMock
 
 from thumbor.context import Context
 from derpconf.config import Config
@@ -86,3 +85,40 @@ class S3LoaderVows(Vows.Context):
 
             s3_loader.load(topic, 'foo.bar', callback)
             expect(load_sync_patch.called).to_be_false()
+
+    class HandleDataFuncLoader(Vows.Context):
+
+        def topic(self):
+
+            conf = Config()
+            conf.define('TC_AWS_MAX_RETRIES', 3, '')
+            return Context(config=conf)
+
+        def should_call_twice(self, topic):
+
+            def callback(*args, **kwargs):
+                pass
+
+            file_key = {
+                'Error': 'Error',
+                'ResponseMetadata': {
+                    'HTTPStatusCode': 502
+                }
+            }
+
+            self.call_count = 0
+            def get(key, callback=None):
+                self.call_count += 1
+                callback(file_key)
+
+            mock_bucket_loader = MagicMock()
+            mock_bucket_loader.get = get
+            func = s3_loader.HandleDataFunc.as_func(
+                '/'.join([s3_bucket, IMAGE_PATH]),
+                callback=callback,
+                bucket_loader=mock_bucket_loader,
+                context=topic
+            )
+
+            func(file_key)
+            expect(self.call_count).to_equal(3)
