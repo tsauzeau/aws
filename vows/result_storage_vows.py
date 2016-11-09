@@ -1,5 +1,7 @@
 #se!/usr/bin/python
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
+from dateutil.tz import tzutc
 
 from pyvows import Vows, expect
 
@@ -90,6 +92,41 @@ class S3ResultStorageVows(Vows.Context):
             expect(topic.args[0].metadata).to_include('some-other-header')
             expect(topic.args[0].content_type).to_equal(IMAGE_BYTES)
 
+    class ExpiredVows(Vows.Context):
+        class WhenExpiredEnabled(Vows.Context):
+            def topic(self):
+                return Storage(Context(config=Config(RESULT_STORAGE_EXPIRATION_SECONDS=3600)))
+
+            def should_check_invalid_key(self, topic):
+                expect(topic.is_expired(None)).to_be_true()
+                expect(topic.is_expired(False)).to_be_true()
+                expect(topic.is_expired(dict())).to_be_true()
+                expect(topic.is_expired({'Error': ''})).to_be_true()
+
+            def should_tell_when_not_expired(self, topic):
+                key = {
+                    'LastModified': datetime.now(tzutc()),
+                    'Body': 'foobar',
+                }
+                expect(topic.is_expired(key)).to_be_false()
+
+            def should_tell_when_expired(self, topic):
+                key = {
+                    'LastModified': (datetime.now(tzutc()) - timedelta(seconds=3601)),
+                    'Body': 'foobar',
+                }
+                expect(topic.is_expired(key)).to_be_true()
+
+        class WhenExpiredDisabled(Vows.Context):
+            def topic(self):
+                return Storage(Context(config=Config(RESULT_STORAGE_EXPIRATION_SECONDS=0)))
+
+            def should_not_tell_when_expired(self, topic):
+                key = {
+                    'LastModified': (datetime.now(tzutc()) - timedelta(seconds=3601)),
+                    'Body': 'foobar',
+                }
+                expect(topic.is_expired(key)).to_be_false()
     class HandlesStoragePrefix(Vows.Context):
         @mock_s3
         def topic(self):

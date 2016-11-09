@@ -23,6 +23,7 @@ class Storage(AwsStorage, BaseStorage):
         """
         BaseStorage.__init__(self, context)
         AwsStorage.__init__(self, context, 'TC_AWS_RESULT_STORAGE')
+        self.storage_expiration_seconds = context.config.get('RESULT_STORAGE_EXPIRATION_SECONDS', 3600)
 
     @return_future
     def put(self, bytes, callback=None):
