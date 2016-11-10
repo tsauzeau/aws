@@ -115,7 +115,7 @@ class AwsStorage():
         :rtype: bool
         """
         if key and self._get_error(key) is None and 'LastModified' in key:
-            expire_in_seconds = self.context.config.get('STORAGE_EXPIRATION_SECONDS', 3600)
+            expire_in_seconds = self.storage_expiration_seconds
 
             # Never expire
             if expire_in_seconds is None or expire_in_seconds == 0:
@@ -123,7 +123,7 @@ class AwsStorage():
 
             timediff = datetime.now(tzutc()) - key['LastModified']
 
-            return timediff.seconds > self.context.config.get('STORAGE_EXPIRATION_SECONDS', 3600)
+            return timediff.seconds > expire_in_seconds
         else:
             #If our key is bad just say we're expired
             return True
