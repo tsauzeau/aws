@@ -79,7 +79,7 @@ class HandleDataFunc(object):
         """ Callback method for getObject from s3 """
         if not file_key or 'Error' in file_key or 'Body' not in file_key:
 
-            logger.warn(
+            logger.error(
                 "ERROR retrieving image from S3 {0}: {1}".
                 format(self.key, str(file_key)))
 
