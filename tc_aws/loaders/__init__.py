@@ -19,7 +19,7 @@ def _get_bucket_and_key(context, url):
     url = urllib2.unquote(url)
 
     bucket = context.config.get('TC_AWS_LOADER_BUCKET')
-    if bucket is None:
+    if not bucket:
         bucket = _get_bucket(url)
         url = '/'.join(url.lstrip('/').split('/')[1:])
 
