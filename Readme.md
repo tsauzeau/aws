@@ -40,9 +40,15 @@ We recommend to use python-virtualevn (virtualenv and virtualenv-wrapper)
  * *tc_aws.result_storages.s3_storage*
  * *tc_aws.storages.s3_storage*
  
-Why use S3-specific loaders rather than just giving the S3 HTTP url to Thumbor? If your S3 files are private and you sign the urls, the query strings will vary and Thumbor will not be able to cache the image.
+### What is the purpose of the S3 loader?
 
-Additional Configuration values used:
+You might ask yourself why the S3 loaders are necessary? Aren't files on S3 already available through HTTP already? Why wouldn't you just give the S3 url of your file to Thumbor and let it query the file through HTTP?
+
+If your S3 assets are not public, you'll need to generate a signed URL. This url will be different everytime you sign it. Thumbor will be unable to understand that these urls all refer to the same file, and thus won be able to cache it.
+
+The S3 loader avoids this problem, since you'll only be including the S3 key name in the Thumbor url. Thumbor itself will have the AWS authorization keys to fetch the file.
+
+## Additional Configuration values used:
 
 ```.ini
 # AWS Region the bucket is located in. 
