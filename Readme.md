@@ -55,8 +55,6 @@ The S3 loader avoids this problem, since you'll only be including the S3 key nam
 TC_AWS_REGION='eu-west-1' 
 # A custom AWS endpoint.
 TC_AWS_ENDPOINT=''
-# You might need to set this to True for some regions, such as eu-central-1.
-S3_USE_SIGV4=False
 
 TC_AWS_STORAGE_BUCKET='' # S3 bucket for Storage
 TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
