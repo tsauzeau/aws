@@ -50,12 +50,20 @@ The S3 loader avoids this problem, since you'll only be including the S3 key nam
 
 ## Additional Configuration values used:
 
+### General settings
+
 ```.ini
 # AWS Region the bucket is located in. 
 TC_AWS_REGION='eu-west-1' 
 # A custom AWS endpoint.
 TC_AWS_ENDPOINT=''
+```
 
+###  Loader settings
+
+When using either ``tc_aws.loaders.s3_loader`` or ``tc_aws.loaders.presigning_loader``.
+
+```.ini
 TC_AWS_STORAGE_BUCKET='' # S3 bucket for Storage
 TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
 
@@ -68,9 +76,22 @@ TC_AWS_LOADER_BUCKET=''
 # all S3 keys.
 TC_AWS_LOADER_ROOT_PATH=''
 
-TC_AWS_RESULT_STORAGE_BUCKET='' # S3 bucket for result Storage
-TC_AWS_RESULT_STORAGE_ROOT_PATH='' # S3 path prefix for Result storage bucket
-TC_AWS_MAX_RETRY=0 # Max retries for get image from S3 Bucket. Default is 0
+# Enable HTTP Loader as well?
+# This would allow you to load watermarks in over your images dynamically through a URI
+# E.g.
+# http://your-thumbor.com/unsafe/filters:watermark(http://example.com/watermark.png,0,0,50)/s3_bucket/photo.jpg
+TC_AWS_ENABLE_HTTP_LOADER=False
+
+TC_AWS_ALLOWED_BUCKETS=False # List of allowed bucket to be requested
+```
+
+###  Storage settings
+
+When ``tc_aws.storages.s3_storage`` is enabled.
+
+```.ini
+TC_AWS_STORAGE_BUCKET='' # S3 bucket for Storage
+TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
 
 # put data into S3 using the Server Side Encryption functionality to
 # encrypt data at rest in S3
@@ -80,14 +101,16 @@ TC_AWS_STORAGE_SSE=False
 # put data into S3 with Reduced Redundancy
 # https://aws.amazon.com/about-aws/whats-new/2010/05/19/announcing-amazon-s3-reduced-redundancy-storage/
 TC_AWS_STORAGE_RRS=False
+```
 
+###  Result storage settings
 
-# Enable HTTP Loader as well?
-# This would allow you to load watermarks in over your images dynamically through a URI
-# E.g.
-# http://your-thumbor.com/unsafe/filters:watermark(http://example.com/watermark.png,0,0,50)/s3_bucket/photo.jpg
-TC_AWS_ENABLE_HTTP_LOADER=False
+When ``tc_aws.result_storages.s3_storage`` is enabled.
 
-TC_AWS_ALLOWED_BUCKETS=False # List of allowed bucket to be requested
+```.ini
+TC_AWS_RESULT_STORAGE_BUCKET='' # S3 bucket for result Storage
+TC_AWS_RESULT_STORAGE_ROOT_PATH='' # S3 path prefix for Result storage bucket
+TC_AWS_MAX_RETRY=0 # Max retries for get image from S3 Bucket. Default is 0
+
 TC_AWS_STORE_METADATA=False # Store result with metadata (for instance content-type)
 ```
