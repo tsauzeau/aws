@@ -35,25 +35,63 @@ We recommend to use python-virtualevn (virtualenv and virtualenv-wrapper)
 
 ## Features
 
- * tc_aws.loaders.s3_loader
- * tc_aws.loaders.presigning_loader
- * tc_aws.result_storages.s3_storage
- * tc_aws.storages.s3_storage
+ * *tc_aws.loaders.s3_loader* - takes a S3 key path and optional bucket name, and downloads the file through the S3 API.
+ * *tc_aws.loaders.presigning_loader* - instead of downloading via the API, generates a signed link to the file on S3, then feeds it to the Thumbor's regular http loader. This will likely be more performant, as it avoids async issues with the boto library (see [#22](https://github.com/thumbor-community/aws/pull/22) and [#14](https://github.com/thumbor-community/aws/issues/14).
+ * *tc_aws.result_storages.s3_storage*
+ * *tc_aws.storages.s3_storage*
+ 
+### What is the purpose of the S3 loader?
 
-Additional Configuration values used:
+You might ask yourself why the S3 loaders are necessary? Aren't files on S3 already available through HTTP already? Why wouldn't you just give the S3 url of your file to Thumbor and let it query the file through HTTP?
+
+If your S3 assets are not public, you'll need to generate a signed URL. This url will be different everytime you sign it. Thumbor will be unable to understand that these urls all refer to the same file, and thus won be able to cache it.
+
+The S3 loader avoids this problem, since you'll only be including the S3 key name in the Thumbor url. Thumbor itself will have the AWS authorization keys to fetch the file.
+
+## Additional Configuration values used:
+
+### General settings
 
 ```.ini
-TC_AWS_REGION='eu-west-1' # AWS Region
+# AWS Region the bucket is located in. 
+TC_AWS_REGION='eu-west-1' 
+# A custom AWS endpoint.
+TC_AWS_ENDPOINT=''
+```
 
+###  Loader settings
+
+When using either ``tc_aws.loaders.s3_loader`` or ``tc_aws.loaders.presigning_loader``.
+
+```.ini
 TC_AWS_STORAGE_BUCKET='' # S3 bucket for Storage
 TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
 
-TC_AWS_LOADER_BUCKET='' #S3 bucket for loader
-TC_AWS_LOADER_ROOT_PATH='' # S3 path prefix for Loader bucket
+# S3 bucket for Loader. If given, source urls are interpreted as keys
+# within this bucket. If not given, source urls are expected to contain
+# the bucket name, such as 's3-bucket/keypath'.
+TC_AWS_LOADER_BUCKET='' 
 
-TC_AWS_RESULT_STORAGE_BUCKET='' # S3 bucket for result Storage
-TC_AWS_RESULT_STORAGE_ROOT_PATH='' # S3 path prefix for Result storage bucket
-TC_AWS_MAX_RETRY=0 # Max retries for get image from S3 Bucket. Default is 0
+# S3 path prefix for Loader bucket. If given, this is prefixed to 
+# all S3 keys.
+TC_AWS_LOADER_ROOT_PATH=''
+
+# Enable HTTP Loader as well?
+# This would allow you to load watermarks in over your images dynamically through a URI
+# E.g.
+# http://your-thumbor.com/unsafe/filters:watermark(http://example.com/watermark.png,0,0,50)/s3_bucket/photo.jpg
+TC_AWS_ENABLE_HTTP_LOADER=False
+
+TC_AWS_ALLOWED_BUCKETS=False # List of allowed bucket to be requested
+```
+
+###  Storage settings
+
+When ``tc_aws.storages.s3_storage`` is enabled.
+
+```.ini
+TC_AWS_STORAGE_BUCKET='' # S3 bucket for Storage
+TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
 
 # put data into S3 using the Server Side Encryption functionality to
 # encrypt data at rest in S3
@@ -63,14 +101,16 @@ TC_AWS_STORAGE_SSE=False
 # put data into S3 with Reduced Redundancy
 # https://aws.amazon.com/about-aws/whats-new/2010/05/19/announcing-amazon-s3-reduced-redundancy-storage/
 TC_AWS_STORAGE_RRS=False
+```
 
+###  Result storage settings
 
-# Enable HTTP Loader as well?
-# This would allow you to load watermarks in over your images dynamically through a URI
-# E.g.
-# http://your-thumbor.com/unsafe/filters:watermark(http://example.com/watermark.png,0,0,50)/s3_bucket/photo.jpg
-TC_AWS_ENABLE_HTTP_LOADER=False
+When ``tc_aws.result_storages.s3_storage`` is enabled.
 
-TC_AWS_ALLOWED_BUCKETS=False # List of allowed bucket to be requested
+```.ini
+TC_AWS_RESULT_STORAGE_BUCKET='' # S3 bucket for result Storage
+TC_AWS_RESULT_STORAGE_ROOT_PATH='' # S3 path prefix for Result storage bucket
+TC_AWS_MAX_RETRY=0 # Max retries for get image from S3 Bucket. Default is 0
+
 TC_AWS_STORE_METADATA=False # Store result with metadata (for instance content-type)
 ```
