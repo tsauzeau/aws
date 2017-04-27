@@ -117,8 +117,12 @@ class Bucket(object):
         session = Botocore(service='s3', region_name=self._region,
                            operation='DeleteObject', session=my_session,
                            endpoint_url=self._endpoint)
+
+        def toto(response):
+            logger.debug("coucou: {0}".format(response))
+
         session.call(
-            callback=callback,
+            callback=toto,
             Bucket=self._bucket,
             Key=self._clean_key(path),
         )
