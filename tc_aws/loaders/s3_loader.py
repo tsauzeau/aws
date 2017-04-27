@@ -56,6 +56,7 @@ class HandleDataFunc(object):
         self.context = context
         self.limit_max_retries = context.config.get('TC_AWS_MAX_RETRIES')
         self.max_retries_counter = 0
+        self.current_bucket = 1
 
     @classmethod
     def as_func(cls, *init_args, **init_kwargs):
@@ -99,9 +100,15 @@ class HandleDataFunc(object):
 
             if status_code == 404:
                 logger.debug("buckets: {0}".format(self.buckets))
-                for bucket in range(len(self.buckets)):
-                    if (bucket != 0):
-                        logger.debug("bucket: {0}".format(self.buckets[bucket]))
+                if self.current_bucket < len(self.buckets):
+                    logger.debug("bucket: {0}".format(self.buckets[self.current_bucket]))
+                    buck = self.buckets[self.current_bucket]
+                    self.bucket_loader = Bucket(buck, self.context.config.get('TC_AWS_REGION'),
+                                                self.context.config.get('TC_AWS_ENDPOINT'))
+                    self.bucket_loader.get(self.key,
+                                           callback=self.dispatch)
+                    self.current_bucket = self.current_bucket + 1
+
                 result.error = LoaderResult.ERROR_NOT_FOUND
                 self.callback(result)
                 return
