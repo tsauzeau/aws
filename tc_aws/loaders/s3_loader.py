@@ -108,10 +108,10 @@ class HandleDataFunc(object):
                     self.bucket_loader.get(self.key,
                                            callback=self.dispatch)
                     self.current_bucket = self.current_bucket + 1
-
-                result.error = LoaderResult.ERROR_NOT_FOUND
-                self.callback(result)
-                return
+                else:
+                    result.error = LoaderResult.ERROR_NOT_FOUND
+                    self.callback(result)
+                    return
 
             if self.max_retries_counter < self.limit_max_retries:
                 self.__increment_retry_counter()
