@@ -116,6 +116,7 @@ class Bucket(object):
         session = Botocore(service='s3', region_name=self._region,
                            operation='DeleteObject', session=my_session,
                            endpoint_url=self._endpoint)
+
         session.call(
             callback=callback,
             Bucket=self._bucket,
