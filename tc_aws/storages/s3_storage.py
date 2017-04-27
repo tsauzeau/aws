@@ -10,6 +10,8 @@ from thumbor.storages import BaseStorage
 
 from ..aws.storage import AwsStorage
 
+from thumbor.utils import logger
+
 class Storage(AwsStorage, BaseStorage):
     """
     S3 Storage
@@ -56,6 +58,9 @@ class Storage(AwsStorage, BaseStorage):
 
         super(Storage, self).get(path, callback=parse_body)
 
+
+    def remove(self,key):
+        logger.debug("toloooollloooolloo")
 
     def resolve_original_photo_path(self, filename):
         """
