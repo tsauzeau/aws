@@ -4,3 +4,5 @@ build
 *.deb
 /dist
 /docs/_build*
+/venv
+/.idea
