@@ -106,7 +106,10 @@ class HandleDataFunc(object):
                     self.bucket_loader = Bucket(buck, self.context.config.get('TC_AWS_REGION'),
                                                 self.context.config.get('TC_AWS_ENDPOINT'))
                     logger.debug("bucket_loader: {0}".format(self.bucket_loader))
+                    self.bucket_loader.get(self.key,
+                                           callback=self.dispatch)
                     self.current_bucket = self.current_bucket + 1
+                    return
                 else:
                     result.error = LoaderResult.ERROR_NOT_FOUND
                     self.callback(result)
