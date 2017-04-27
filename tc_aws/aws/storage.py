@@ -87,7 +87,6 @@ class AwsStorage():
         :return: Whether deletion is successful or not
         :rtype: bool
         """
-        logger.debug("DDDDDDDDEEEEELLLLLEEEETTTTEEE")
         yield self.storage.delete(path)
         return
 
