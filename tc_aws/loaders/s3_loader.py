@@ -99,6 +99,9 @@ class HandleDataFunc(object):
 
             if status_code == 404:
                 logger.debug("buckets: {0}".format(self.buckets))
+                for bucket in range(len(self.buckets)):
+                    if (bucket != 0):
+                        logger.debug("bucket: {0}".format(self.buckets[bucket]))
                 result.error = LoaderResult.ERROR_NOT_FOUND
                 self.callback(result)
                 return

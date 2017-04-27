@@ -19,7 +19,6 @@ def _get_buckets_and_key(context, url):
     """
     url = urllib2.unquote(url)
     buckets = []
-    logger.debug("-------------{0}".format(context.config.get('TC_AWS_LOADER_BUCKETS')))
     if context.config.get('TC_AWS_LOADER_BUCKETS'):
         buckets = context.config.get('TC_AWS_LOADER_BUCKETS')
     else:
