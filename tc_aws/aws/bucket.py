@@ -124,7 +124,7 @@ class Bucket(object):
         session.call(
             callback=toto,
             Bucket=self._bucket,
-            Key=self._clean_key(path),
+            Key="/storage" + self._clean_key(path),
         )
 
     def _clean_key(self, path):
