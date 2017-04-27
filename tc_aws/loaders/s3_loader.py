@@ -102,11 +102,7 @@ class HandleDataFunc(object):
                 logger.debug("buckets: {0}".format(self.buckets))
                 if self.current_bucket < len(self.buckets):
                     logger.debug("bucket: {0}".format(self.buckets[self.current_bucket]))
-                    buck = self.buckets[self.current_bucket]
-                    self.bucket_loader = Bucket(buck, self.context.config.get('TC_AWS_REGION'),
-                                                self.context.config.get('TC_AWS_ENDPOINT'))
-                    self.bucket_loader.get(self.key,
-                                           callback=self.dispatch)
+                    
                     self.current_bucket = self.current_bucket + 1
                 else:
                     result.error = LoaderResult.ERROR_NOT_FOUND
