@@ -112,17 +112,13 @@ class Bucket(object):
         :param string path: Path or 'key' to delete
         :param callable callback: Called function once done
         """
-        logger.debug("DDDDDDDDEEEEELLLLLEEEETTTTEEE2222 {0}".format(path))
         my_session = session_handler.get_session(self._endpoint is not None)
         session = Botocore(service='s3', region_name=self._region,
                            operation='DeleteObject', session=my_session,
                            endpoint_url=self._endpoint)
 
-        def toto(response):
-            logger.debug("coucou: {0}".format(response))
-
         session.call(
-            callback=toto,
+            callback=callback,
             Bucket=self._bucket,
             Key=self._clean_key(path),
         )

@@ -92,7 +92,6 @@ class AwsStorage():
 
         path = storage_root_path + "/" + path
 
-        logger.debug("DDDDDDDDEEEEELLLLLEEEETTTTEEE {0}".format(path))
         self.storage.delete(path)
         return
 
