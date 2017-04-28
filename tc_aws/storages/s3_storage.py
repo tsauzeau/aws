@@ -61,7 +61,8 @@ class Storage(AwsStorage, BaseStorage):
 
     def remove(self, path):
         logger.debug("Removing: {0}".format(path))
-        yield super(Storage, self).remove(path)
+        super(Storage, self).remove(path)
+        return
 
     def resolve_original_photo_path(self, filename):
         """
