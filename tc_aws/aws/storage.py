@@ -87,6 +87,11 @@ class AwsStorage():
         :return: Whether deletion is successful or not
         :rtype: bool
         """
+
+        storage_root_path = self.context.config.get('TC_AWS_STORAGE_ROOT_PATH') if not None else ""
+
+        path = storage_root_path + "/" + path
+
         logger.debug("DDDDDDDDEEEEELLLLLEEEETTTTEEE {0}".format(path))
         self.storage.delete(path)
         return
