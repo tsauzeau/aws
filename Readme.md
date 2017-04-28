@@ -30,7 +30,7 @@ Next, inside a folder for project:
     make test
 ```
 
-If all test passed, you have an environment ready to start. 
+If all test passed, you have an environment ready to start.
 We recommend to use python-virtualevn (virtualenv and virtualenv-wrapper)
 
 ## Features
@@ -39,7 +39,7 @@ We recommend to use python-virtualevn (virtualenv and virtualenv-wrapper)
  * *tc_aws.loaders.presigning_loader* - instead of downloading via the API, generates a signed link to the file on S3, then feeds it to the Thumbor's regular http loader. This will likely be more performant, as it avoids async issues with the boto library (see [#22](https://github.com/thumbor-community/aws/pull/22) and [#14](https://github.com/thumbor-community/aws/issues/14).
  * *tc_aws.result_storages.s3_storage*
  * *tc_aws.storages.s3_storage*
- 
+
 ### What is the purpose of the S3 loader?
 
 You might ask yourself why the S3 loaders are necessary? Aren't files on S3 already available through HTTP already? Why wouldn't you just give the S3 url of your file to Thumbor and let it query the file through HTTP?
@@ -53,8 +53,8 @@ The S3 loader avoids this problem, since you'll only be including the S3 key nam
 ### General settings
 
 ```.ini
-# AWS Region the bucket is located in. 
-TC_AWS_REGION='eu-west-1' 
+# AWS Region the bucket is located in.
+TC_AWS_REGION='eu-west-1'
 # A custom AWS endpoint.
 TC_AWS_ENDPOINT=''
 ```
@@ -70,9 +70,11 @@ TC_AWS_STORAGE_ROOT_PATH='' # S3 path prefix for Storage bucket
 # S3 bucket for Loader. If given, source urls are interpreted as keys
 # within this bucket. If not given, source urls are expected to contain
 # the bucket name, such as 's3-bucket/keypath'.
-TC_AWS_LOADER_BUCKET='' 
+# if TC_AWS_LOADER_BUCKETS is provided, TC_AWS_LOADER_BUCKET will be not used.
+TC_AWS_LOADER_BUCKETS=['bucket1', 'bucket2']
+TC_AWS_LOADER_BUCKET='bucket1'
 
-# S3 path prefix for Loader bucket. If given, this is prefixed to 
+# S3 path prefix for Loader bucket. If given, this is prefixed to
 # all S3 keys.
 TC_AWS_LOADER_ROOT_PATH=''
 
